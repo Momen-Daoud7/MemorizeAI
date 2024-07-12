@@ -1,0 +1,7 @@
+google-generativeai
+youtube_transcript_api
+gtts
+faiss-cpu
+sentence-transformers
+numpy
+python-dotenv
