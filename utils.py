@@ -19,9 +19,41 @@ generation_config = {
   "max_output_tokens": 18192,
 }
 
+def initialize_session_state():
+    if 'processed_videos' not in st.session_state:
+        st.session_state.processed_videos = {}
+    if 'transcripts' not in st.session_state:
+        st.session_state.transcripts = {}
+    if 'goals' not in st.session_state:
+        st.session_state.goals = []
+
+initialize_session_state()
+
 def get_current_language() -> str:
     return st.session_state.get("language", "en")
 
+def get_video_id(link: str) -> str:
+    patterns = [
+        r'(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(?:embed\/)?(?:v\/)?(?:shorts\/)?(?:live\/)?([^?&\n]+)',
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, link)
+        if match:
+            return match.group(1)
+    return None
+
+def get_transcript(video_id: str) -> str:
+    if video_id not in st.session_state.transcripts:
+        try:
+            transcript = YouTubeTranscriptApi.get_transcript(video_id)
+            formatter = TextFormatter()
+            formatted_transcript = formatter.format_transcript(transcript)
+            st.session_state.transcripts[video_id] = formatted_transcript
+        except Exception as e:
+            st.error(f"Error fetching transcript: {str(e)}")
+            return ""
+    
+    return st.session_state.transcripts[video_id]
 def get_video_id(link: str) -> str:
     patterns = [
         r'(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(?:embed\/)?(?:v\/)?(?:shorts\/)?(?:live\/)?([^?&\n]+)',
@@ -146,17 +178,12 @@ def process_video(video_id: str, goals: List[str]) -> Tuple[str, str, str]:
     summary, transcript = generate_summary(video_id, goals)
     title = generate_title(video_id)
     
-    if 'processed_videos' not in st.session_state:
-        st.session_state.processed_videos = {}
     st.session_state.processed_videos[video_id] = title
     
     return summary, transcript, title
 
 def get_processed_videos() -> List[Tuple[str, str]]:
-    if 'processed_videos' not in st.session_state:
-        st.session_state.processed_videos = {}
     return list(st.session_state.processed_videos.items())
-
 # Initialize session state variables
 if 'processed_videos' not in st.session_state:
     st.session_state.processed_videos = {}

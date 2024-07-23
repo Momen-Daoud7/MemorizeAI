@@ -1,7 +1,9 @@
 import streamlit as st
-from utils import get_video_id, process_video, get_processed_videos, generate_summary
+from utils import get_video_id, process_video, get_processed_videos, generate_summary, initialize_session_state
 from localization import initialize_language_selection, get_translation, set_rtl_style
 
+# Initialize session state
+initialize_session_state()
 
 st.set_page_config(page_title=f"{get_translation('app_title')} - {get_translation('summary_title')}", layout="wide")
 
