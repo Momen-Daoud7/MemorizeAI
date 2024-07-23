@@ -1,8 +1,11 @@
 import streamlit as st
-from utils import get_processed_videos, generate_notes
+from utils import get_processed_videos, generate_notes, initialize_session_state
 from localization import initialize_language_selection, get_translation, set_rtl_style
 
 st.set_page_config(page_title=f"{get_translation('app_title')} - {get_translation('notes_title')}", layout="wide")
+
+# Initialize session state
+initialize_session_state()
 
 # Initialize language selection
 initialize_language_selection()
