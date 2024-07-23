@@ -26,8 +26,10 @@ def initialize_session_state():
         st.session_state.transcripts = {}
     if 'goals' not in st.session_state:
         st.session_state.goals = []
+    if 'chat_history' not in st.session_state:
+        st.session_state.chat_history = []
 
-initialize_session_state()
+
 
 def get_current_language() -> str:
     return st.session_state.get("language", "en")
