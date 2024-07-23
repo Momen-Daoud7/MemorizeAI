@@ -90,7 +90,11 @@ Please summarize the following content {lang_instruction}, focusing on aspects r
 
 Ensure the summary is comprehensive yet concise, highlighting key points related to the given goals."""
 
-    summaryModel = genai.GenerativeModel(model_name="gemini-1.5-pro")
+    summaryModel = genai.GenerativeModel(
+        model_name="gemini-1.5-pro",
+        generation_config=generation_config,
+        system_instruction="You're a YouTube summarizer assistant. Your job is to create high-quality summaries that represent the main ideas, quotes,stories and key points from the user's text input, focusing on aspects relevant to their stated goals."
+    )
     response = summaryModel.generate_content(prompt)
     summary = response.text
 
@@ -157,12 +161,16 @@ And based on the following transcript of a YouTube video:
 
 {transcript}
 
-
-
-Create in-depth notes {lang_instruction} in a question-and-answer format, focusing on aspects relevant to these goals. 
+Create a comprehensive set of question and answer notes {lang_instruction} based on the given text focusing on aspects relevant to these goals. Break down the information into individual, detailed points, focusing on each specific fact, concept, or idea mentioned. Format your response as a series of questions followed by their corresponding answers. Ensure that each Q&A pair covers a single, discrete piece of information from the text. Don't summarize or generalize; instead, aim to capture every detail in the form of a specific question and a precise answer. This approach should allow for an in-depth study of the material, covering all aspects of the content without omitting any details.
+ 
 Format the output as markdown."""
 
-    noteModel = genai.GenerativeModel(model_name="gemini-1.5-pro")
+        
+    noteModel = genai.GenerativeModel(
+        model_name="gemini-1.5-pro",
+        generation_config=generation_config,
+        system_instruction="You're a note-taking master. Your job is to create high-quality notes in question and answer format from the user's text input, focusing on aspects relevant to their stated goals."
+    )
     response = noteModel.generate_content(prompt)
     return response.text
 
